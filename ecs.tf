@@ -134,7 +134,7 @@ resource "aws_lb_target_group" "backend" {
 }
 
 resource "aws_lb_target_group" "frontend" {
-  name        = "lightfeather-frontend-target-group"
+  name        = "frontend-target-group"
   port        = local.frontend_port
   protocol    = "HTTP"
   vpc_id      = aws_vpc.lightfeather.id
@@ -217,7 +217,7 @@ DEFINITION
 
 resource "aws_security_group" "backend" {
   name  = "lightfeather-backend-task-security-group"
-  vpc_id = aws_vpc.default.id
+  vpc_id = aws_vpc.lightfeather.id
 
     ingress {
     from_port       = local.backend_port
@@ -236,7 +236,7 @@ resource "aws_security_group" "backend" {
 
 resource "aws_security_group" "frontend" {
   name  = "lightfeather-frontend-task-security-group"
-  vpc_id = aws_vpc.default.id
+  vpc_id = aws_vpc.lightfeather.id
 
   ingress {
     from_port       = local.frontend_port
@@ -302,6 +302,6 @@ resource "aws_ecs_service" "frontend" {
 }
 
 output "load_balancer_dns_name" {
-  value = aws_lb.default.dns_name
+  value = aws_lb.lightfeather.dns_name
 }
 
