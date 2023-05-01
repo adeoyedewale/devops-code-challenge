@@ -1,10 +1,11 @@
+// Declare local variables
 locals {
   cidr_block = "10.32.0.0/16"
   public_cidr_offset = 2
   frontend_port = 3000
   backend_port = 8080
 }
-
+// Declare required Terraform providers
 terraform {
   required_providers {
     aws = {
@@ -14,16 +15,19 @@ terraform {
   }
 }
 
+// Configure AWS provider with region
 provider "aws" {
   region = "us-east-1"
   access_key = ""
   secret_key = ""
 }
 
+// Get list of availability zones in the region
 data "aws_availability_zones" "available_zones" {
   state = "available"
 }
 
+// Create a VPC with a specified CIDR block and name
 resource "aws_vpc" "lightfeather" {
   cidr_block = local.cidr_block
   tags = {
@@ -31,6 +35,7 @@ resource "aws_vpc" "lightfeather" {
   }
 }
 
+// Create public subnets with a specified CIDR block and availability zone in each zone
 resource "aws_subnet" "public" {
   count                   = 2
   cidr_block              = cidrsubnet(local.cidr_block, 8, local.public_cidr_offset + count.index)
@@ -42,6 +47,7 @@ resource "aws_subnet" "public" {
   }
 }
 
+// Create private subnets with a specified CIDR block and availability zone in each zone
 resource "aws_subnet" "private" {
   count             = 2
   cidr_block        = cidrsubnet(local.cidr_block, 8, count.index)
@@ -52,6 +58,7 @@ resource "aws_subnet" "private" {
   }
 }
 
+// Create an internet gateway and attach it to the VPC
 resource "aws_internet_gateway" "gateway" {
   vpc_id = aws_vpc.lightfeather.id
   tags = {
@@ -59,24 +66,28 @@ resource "aws_internet_gateway" "gateway" {
   }
 }
 
+// Add a default route to the internet gateway in the main route table
 resource "aws_route" "internet_access" {
   route_table_id         = aws_vpc.lightfeather.main_route_table_id
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.gateway.id
 }
 
+// Create Elastic IPs for NAT gateways
 resource "aws_eip" "gateway" {
   count      = 2
   vpc        = true
   depends_on = [aws_internet_gateway.gateway]
 }
 
+// Create NAT gateways in public subnets and associate them with Elastic IPs
 resource "aws_nat_gateway" "gateway" {
   count         = 2
   subnet_id     = element(aws_subnet.public.*.id, count.index)
   allocation_id = element(aws_eip.gateway.*.id, count.index)
 }
 
+// Create private route tables and add a route to the NAT gateway
 resource "aws_route_table" "private" {
   count  = 2
   vpc_id = aws_vpc.lightfeather.id
@@ -87,12 +98,14 @@ resource "aws_route_table" "private" {
   }
 }
 
+// Associates the private subnets with their corresponding route tables. 
 resource "aws_route_table_association" "private" {
   count          = 2
   subnet_id      = element(aws_subnet.private.*.id, count.index)
   route_table_id = element(aws_route_table.private.*.id, count.index)
 }
 
+// Creates a security group for the load balancer.
 resource "aws_security_group" "lb" {
   name  = "lightfeather-alb-security-group"
   vpc_id = aws_vpc.lightfeather.id
@@ -119,12 +132,14 @@ resource "aws_security_group" "lb" {
   }
 }
 
+// Creates an Application Load Balancer and attaches it to the public subnets
 resource "aws_lb" "lightfeather" {
   name            = "lightfeather-lb"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
 }
 
+// Creates target group for backend
 resource "aws_lb_target_group" "backend" {
   name        = "lightfeather-target-group"
   port        = local.backend_port
@@ -133,6 +148,7 @@ resource "aws_lb_target_group" "backend" {
   target_type = "ip"
 }
 
+// Creates target group for frontend
 resource "aws_lb_target_group" "frontend" {
   name        = "frontend-target-group"
   port        = local.frontend_port
@@ -141,9 +157,10 @@ resource "aws_lb_target_group" "frontend" {
   target_type = "ip"
 }
 
+// Creates a listener for the load balancer on the backend port
 resource "aws_lb_listener" "backend" {
   load_balancer_arn = aws_lb.lightfeather.arn
-  port              = 8080
+  port              = local.backend_port
   protocol          = "HTTP"
 
   default_action {
@@ -152,6 +169,7 @@ resource "aws_lb_listener" "backend" {
   }
 }
 
+// Greates a listener for the load balancer on the frontend port
 resource "aws_lb_listener" "frontend" {
   load_balancer_arn = aws_lb.lightfeather.arn
   port              = local.frontend_port
@@ -163,6 +181,7 @@ resource "aws_lb_listener" "frontend" {
   }
 }
 
+// Defines ECS task definition for backend service
 resource "aws_ecs_task_definition" "backend" {
   family                   = "backend"
   network_mode             = "awsvpc"
@@ -189,6 +208,7 @@ resource "aws_ecs_task_definition" "backend" {
 DEFINITION
 }
 
+// Defines ECS task definition for frontend service
 resource "aws_ecs_task_definition" "frontend" {
   family                   = "frontend"
   network_mode             = "awsvpc"
@@ -215,6 +235,7 @@ resource "aws_ecs_task_definition" "frontend" {
 DEFINITION
 }
 
+// Creates security group for backend task
 resource "aws_security_group" "backend" {
   name  = "lightfeather-backend-task-security-group"
   vpc_id = aws_vpc.lightfeather.id
@@ -234,6 +255,7 @@ resource "aws_security_group" "backend" {
   }
 }
 
+// Creates security group for frontend task
 resource "aws_security_group" "frontend" {
   name  = "lightfeather-frontend-task-security-group"
   vpc_id = aws_vpc.lightfeather.id
@@ -253,10 +275,12 @@ resource "aws_security_group" "frontend" {
   }
 }
 
+// Creates an ECS cluster for the services
 resource "aws_ecs_cluster" "lightfeather-cluster" {
   name = "lightfeather-cluster"
 }
 
+// Creates ECS service for the backend task
 resource "aws_ecs_service" "backend" {
   name            = "lightfeather-backend-service"
   cluster         = aws_ecs_cluster.lightfeather-cluster.id
@@ -279,6 +303,7 @@ resource "aws_ecs_service" "backend" {
   depends_on = [aws_lb_listener.backend]
 }
 
+// Creates ECS services for the frontend task
 resource "aws_ecs_service" "frontend" {
   name            = "lightfeather-frontend-service"
   cluster         = aws_ecs_cluster.lightfeather-cluster.id
@@ -301,6 +326,7 @@ resource "aws_ecs_service" "frontend" {
   depends_on = [aws_lb_listener.frontend]
 }
 
+// Outputs the applicattion load balancer DNS name
 output "load_balancer_dns_name" {
   value = aws_lb.lightfeather.dns_name
 }
