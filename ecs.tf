@@ -18,8 +18,6 @@ terraform {
 // Configure AWS provider with region
 provider "aws" {
   region = "us-east-1"
-  access_key = ""
-  secret_key = ""
 }
 
 // Get list of availability zones in the region
