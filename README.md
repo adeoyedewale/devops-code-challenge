@@ -108,5 +108,5 @@ To install necessary packages and softwares on the EC2 virtual machine, I connec
      
 
 # Accessing Deployed Frontend Web Application
-The url of the deployed frontend web application is "http://lightfeather-lb-1106546257.us-east-1.elb.amazonaws.com:3000"
+The url for the deployed frontend web application is "http://lightfeather-lb-1106546257.us-east-1.elb.amazonaws.com:3000"
 Both frontend and backend applications are deployed behind an Application Load Balancer with the load balancer dns name "lightfeather-lb-1106546257.us-east-1.elb.amazonaws.com"
