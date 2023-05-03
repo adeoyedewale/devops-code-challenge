@@ -100,11 +100,10 @@ To install necessary packages and softwares on the EC2 virtual machine, I connec
      * Install Node.js v16
 
 # Application Infrastructure Provisioning Using Terraform
-     * Inorder to run the Terraform script located in the private GitHub repository "https://github.com/adeoyedewale/devops-code-challenge.git",
-       the repository was cloned into the root directory of the EC2 machine running the Jenkins server.
-     * Then cd into the cloned directory to access the terraform file
-     * Then used the following commands: aws configure, terraform init, terraform validate, terraform plan, terraform apply -auto-approve
-     * After successful run, the script outputs Application Load Balancer DNS name which is used together with frontend app port 3000 to access the deployed frontend                    application.
+* Inorder to run the Terraform script located in the private GitHub repository "https://github.com/adeoyedewale/devops-code-challenge.git", the repository was cloned into the root directory of the EC2 machine running the Jenkins server.
+* Then cd into the cloned directory to access the terraform file
+* Then used the following commands: aws configure, terraform init, terraform validate, terraform plan, terraform apply -auto-approve
+* After successful run, the script outputs Application Load Balancer DNS name which is used together with frontend app port 3000 to access the deployed frontend application.
      
      
 
