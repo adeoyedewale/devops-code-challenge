@@ -57,3 +57,48 @@ A few examples of extras for this coding challenge:
 4. Running the application in a serverless environment
 
 This is not an exhaustive list of extra features that could be added to this code challenge. At the end of the day, this section is for you to demonstrate any skills you want to show that’s not captured in the core requirement.
+
+# Steps Needed to Deploy my Application Using Jenkins
+The following are the steps needed to deploy my application:
+1. Access Jenkins Automation Server console already provisioned and running on AWS account using this url http://204.236.244.121:8080/
+2. username for Jenkins: bravo
+3. password for Jenkins: bravo
+4. On Jenkins dashboard, click on "New item" to create a new pipeline job
+5. Give a name to your new pipeline job, select "Pipeline" option and click "OK"
+6. On the "Configuration" page that follows, scroll down to "Pipeline" section.
+7. In "Pipeline" section and under "Definition", select "Pipeline script from SCM" option out of the dropdown options.
+8. Under SCM, select "Git" from its dropdown options.
+9. Copy my gitHub repository url "https://github.com/adeoyedewale/devops-code-challenge.git" into "Repository URL" text field
+10. Under "Credentials", select "adeoyewale/******" 
+11. Scroll all the way to the bottom to to click "Apply" and "Save" buttons
+12. On the Pipeline page, click on "Build Now" to run the pipeline project
+
+# General Description of Infrastructure Components Supporting Jenkins Server
+1. Manually created a custom Virtual Private Cloud (VPC) with following features:
+      * IPv4 CIDR block 10.0.0.0/16
+      * The VPC has one (1) public subnet and zero (0) private subnet
+      * Default Tenancy
+      * One (1) Availability Zone (AZ)
+      * None NAT gateways
+      * None VPC endpoints
+2. Launched EC2 instance with following features:
+      * Number of instance = 1
+      * Amazon machine Image = Ubuntu Server 20.04 LTS
+      * Instance type = t2 medium
+      * Edit network setting to select the custom VPC and public subnet created above
+      * Security Group inbound rules were edited by adding ssh with port 22, custom TCP for HTTP with port 8080, and custom TCP for HTTPS with port 443
+      * Configured storage with Root volume of 20 GiB gp2
+ 3. Created IAM user with AdministratorAccess policy attached to the user
+   
+# Setting up my Environment on the EC2
+To install necessary packages and softwares on the EC2 virtual machine, I connected to Visual Studio Code IDE through SSH Connection on Powershell terminal using private key from AWS. The following installations were done after successful SSH connection between EC2 on AWS and VS Code on local system:
+1. Installed Jenkins
+2. Installed Docker
+4. Installed AWS CLIv2
+5. Installed Terraform
+6. Install npm
+7. Install Node.js v16
+
+# Accessing Deployed Frontend Web Application
+The url of the deployed frontend web application is "http://lightfeather-lb-1106546257.us-east-1.elb.amazonaws.com:3000"
+Both frontend and backend applications are deployed behind an Application Load Balancer with the load balancer dns name "lightfeather-lb-1106546257.us-east-1.elb.amazonaws.com"
