@@ -92,12 +92,21 @@ The following are the steps needed to deploy my application:
    
 # Setting up my Environment on the EC2
 To install necessary packages and softwares on the EC2 virtual machine, I connected to Visual Studio Code IDE through SSH Connection on Powershell terminal using private key from AWS. The following installations were done after successful SSH connection between EC2 on AWS and VS Code on local system:
-1. Installed Jenkins
-2. Installed Docker
-4. Installed AWS CLIv2
-5. Installed Terraform
-6. Install npm
-7. Install Node.js v16
+     * Installed Jenkins
+     * Installed Docker
+     * Installed AWS CLIv2
+     * Installed Terraform
+     * Install npm
+     * Install Node.js v16
+
+# Application Infrastructure Provisioning Using Terraform
+     * Inorder to run the Terraform script located in the private GitHub repository "https://github.com/adeoyedewale/devops-code-challenge.git",
+       the repository was cloned into the root directory of the EC2 machine running the Jenkins server.
+     * Then cd into the cloned directory to access the terraform file
+     * Then used the following commands: aws configure, terraform init, terraform validate, terraform plan, terraform apply -auto-approve
+     * After successful run, the script outputs Application Load Balancer DNS name which is used together with frontend app port 3000 to access the deployed frontend                    application.
+     
+     
 
 # Accessing Deployed Frontend Web Application
 The url of the deployed frontend web application is "http://lightfeather-lb-1106546257.us-east-1.elb.amazonaws.com:3000"
