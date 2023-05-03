@@ -80,7 +80,7 @@ The following are the steps needed to deploy my application:
 18. Copy the DNS name and edit the config.js scripts in the backend and frontend folders located in the gitHub repository
 19. In the config.js scripts, replace "localhost" with the Application Load Balancer DNS name.
 20. Repeat steps 13, 14, 15, 16, and 17 above
-21. After successful run of the script, copy and paste the Application Load Balancer DNS name in a web browser and adding the frontend application port 3000 to access the deployed application.
+21. After successful run of the script, copy and paste the Application Load Balancer DNS name into a web browser and adding the frontend application port 3000 to access the deployed application.
 
 # General Description of Infrastructure Components Supporting Jenkins Server
 1. Manually created a custom Virtual Private Cloud (VPC) with following features:
