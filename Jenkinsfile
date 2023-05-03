@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout...') {
               steps {
-                  git url: 'https://github.com/adeoyedewale/devops-code-challenge.git'
+                  git credentialsId: 'github-creds', url: 'https://github.com/adeoyedewale/devops-code-challenge.git'
               }
          }
       
