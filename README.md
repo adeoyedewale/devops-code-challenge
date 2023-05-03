@@ -60,18 +60,27 @@ This is not an exhaustive list of extra features that could be added to this cod
 
 # Steps Needed to Deploy my Application Using Jenkins
 The following are the steps needed to deploy my application:
-1. Access Jenkins Automation Server console already provisioned and running on AWS account using this url http://204.236.244.121:8080/
-2. username for Jenkins: bravo
-3. password for Jenkins: bravo
-4. On Jenkins dashboard, click on "New item" to create a new pipeline job
-5. Give a name to your new pipeline job, select "Pipeline" option and click "OK"
-6. On the "Configuration" page that follows, scroll down to "Pipeline" section.
-7. In "Pipeline" section and under "Definition", select "Pipeline script from SCM" option out of the dropdown options.
-8. Under SCM, select "Git" from its dropdown options.
-9. Copy my gitHub repository url "https://github.com/adeoyedewale/devops-code-challenge.git" into "Repository URL" text field
-10. Under "Credentials", select "adeoyewale/******" 
-11. Scroll all the way to the bottom to to click "Apply" and "Save" buttons
-12. On the Pipeline page, click on "Build Now" to run the pipeline project
+1. Create two image repositories on AWS ECR.
+2. Access Jenkins Automation Server console already provisioned and running on AWS account using this url http://204.236.244.121:8080/
+3. username for Jenkins: bravo
+4. password for Jenkins: bravo
+5. On Jenkins dashboard, click on "New item" to create a new pipeline job
+6. Give a name to your new pipeline job, select "Pipeline" option and click "OK"
+7. On the "Configuration" page that follows, scroll down to "Pipeline" section.
+8. In "Pipeline" section and under "Definition", select "Pipeline script from SCM" option out of the dropdown options.
+9. Under SCM, select "Git" from its dropdown options.
+10. Copy my gitHub repository url "https://github.com/adeoyedewale/devops-code-challenge.git" into "Repository URL" text field
+11. Under "Credentials", select "adeoyewale/******" 
+12. Scroll all the way to the bottom to to click "Apply" and "Save" buttons
+13. On the Pipeline page, click on "Build Now" to run the pipeline project
+14. After successful build, check for image URIs including their BUILD NUMBER in the ECR repository for respective frontend and backend images
+15. Copy and paste the image URIs into the respective ecs_task_definition resources as the image values for both frontend and backend
+16. After making this changes, run the terraform script
+17. After successful provisioning of resources, the script outputs the Application Load Balancer DNS name
+18. Copy the DNS name and edit the config.js scripts in the backend and frontend folders located in the gitHub repository
+19. In the config.js scripts, replace "localhost" with the Application Load Balancer DNS name.
+20. Repeat steps 13, 14, 15, 16, and 17 above
+21. After successful run of the script, copy and paste the Application Load Balancer DNS name in a web browser and adding the frontend application port 3000 to access the deployed application.
 
 # General Description of Infrastructure Components Supporting Jenkins Server
 1. Manually created a custom Virtual Private Cloud (VPC) with following features:
